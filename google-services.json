@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "266677125787",
+    "project_id": "app-new-4fc57",
+    "storage_bucket": "app-new-4fc57.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:266677125787:android:c7705d869ddc2fb450bc3e",
+        "android_client_info": {
+          "package_name": "com.kaijmas.apptest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "266677125787-hv9p8s4e39484e3v7ogp5lkr5ggdfn79.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kaijmas.apptest",
+            "certificate_hash": "b188a7d71c083236d450c26c2acf145732be3878"
+          }
+        },
+        {
+          "client_id": "266677125787-tg1741865cfr1avtsiqlujatq47u2dhh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kaijmas.apptest",
+            "certificate_hash": "45e166fb669292cfdfe3f9ffb309d4eb38a4e74a"
+          }
+        },
+        {
+          "client_id": "266677125787-9chqunjldepv8ssrm93easnf42nrcn7b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJQLz8V3DBw5SW7Phny_HhKXd1jbLwvtQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "266677125787-9chqunjldepv8ssrm93easnf42nrcn7b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
