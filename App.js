@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import LoginScreen from './src/screen/LoginScreen';
 import HomeScreen from './src/screen/HomeScreen';
 import LoadingScreen from './src/screen/LoadingScreen';
@@ -7,6 +7,10 @@ import PostScreen from './src/screen/PostScreen';
 import WorkerScreen from './src/screen/WorkerScreen';
 import SearchScreen from './src/screen/SearchScreen';
 import UpdateInfoScreen from './src/screen/UpdateInfoScreen';
+import JobPostingForm from './src/screen/JobPostingForm';
+import EditingForm from './src/screen/JobEditingForm';
+import DetailJobsScreen from './src/screen/DetailJobsScreen';
+
 import Test from './src/screen/Test';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -67,10 +71,13 @@ const App = () => {
       <Stack.Navigator screenOptions={{headerShown: false}}>
           {/* <Stack.Screen name='Test' component={Test}/> */}
           <Stack.Screen name='Loading' component={LoadingScreen}/>
-          <Stack.Screen name='Tab' component={TabApp}/>
           <Stack.Screen name='Login' component={LoginScreen}/>
           <Stack.Screen name='Search' component={SearchScreen}/>
+          <Stack.Screen name='JobPostingForm' component={JobPostingForm} options={{headerShown: true, title:'Đăng tin tuyển dụng'}}/>
+          <Stack.Screen name='JobEditingForm' component={EditingForm} options={{headerShown: true, title:'Cập nhật tin tuyển dụng'}}/>
+          <Stack.Screen name='Detail' component={DetailJobsScreen} options={{headerShown: true, title:'Thông tin chi tiết'}}/>
           <Stack.Screen name='Update_Info' component={UpdateInfoScreen} options={{headerShown: true, title:'Cập nhật thông tin'}}/>
+          <Stack.Screen name='Tab' component={TabApp}/>
       </Stack.Navigator>
     </NavigationContainer>
   )

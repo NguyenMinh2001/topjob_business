@@ -29,13 +29,14 @@ const Form = ({ ShowLoading, HideLoading }) => {
 
   const Login = async () => {
     ShowLoading();
-    
     await axios.post(`${api.baseURL}/login`,{email,password})
     .then(async res => {
       await AsyncStorage.setItem('token',res.data.token)
-      navigation.navigate('Tab')
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Tab', params: res.data.user }]
+      })
     }).catch(e=>{
-      console.log(e.response.status)
       if(e.response.status == 422){
         if (e.response.data.errors.email !== undefined) {
         validate.email = e.response.data.errors.email[0]
@@ -60,10 +61,12 @@ const Form = ({ ShowLoading, HideLoading }) => {
   const Signup = async () => {
     ShowLoading();
     await axios.post(`${api.baseURL}/register`, { name, email, password, password_confirmation })
-
       .then(async res => {
         await AsyncStorage.setItem('token', res.data.token)
-        navigation.navigate('Tab')
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Tab', params: res.data.user }]
+        })
       }).catch(e => {
         if (e.response.data.errors.email !== undefined) {
           validate.email = e.response.data.errors.email[0]
@@ -168,7 +171,7 @@ const Form = ({ ShowLoading, HideLoading }) => {
               <Icon name='user' size={15} color={'gray'}></Icon>
             </View>
             <View style={{ flex: 1 }}>
-              <TextInput value={name} onChangeText={value => { SetName(value) }} placeholder='Nhập Vào Họ Và Tên'></TextInput>
+              <TextInput value={name} onChangeText={value => { SetName(value) }} placeholder='Nhập Vào Tên Công Ty'></TextInput>
             </View>
           </View>
 

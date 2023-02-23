@@ -11,7 +11,6 @@ export default function LoadingScreen() {
   const navigation = useNavigation();
   const [token, settoken] = useState('');
   useState(async () => {settoken(await AsyncStorage.getItem('token'))})
-  console.log(token === '')
   useEffect(() => {
     if (token !== '') {
       axios.get(`${api.baseURL}/user`, {
@@ -46,4 +45,3 @@ export default function LoadingScreen() {
     </View>
   )
 }
-

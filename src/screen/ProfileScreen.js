@@ -16,6 +16,7 @@ import axios from 'axios';
 import api from '../services/ApiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SysLoading from '../component/sys_loading';
+import { LinearGradient } from 'expo-linear-gradient'
 import { useFonts } from 'expo-font';
 
 function Body({avatar,name}) {
@@ -29,12 +30,12 @@ function Body({avatar,name}) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <>
-        <View>
-          <Image
+        <LinearGradient colors={['#FF6F00','#FFA000']} style={{height: 300, width: '100%' }}>
+          {/* <Image
             style={styles.coverImage}
             source={{ uri: 'https://targetcareers.co.uk/sites/targetcareers.co.uk/files/public/Business-and-management.jpg' }}
-          />
-        </View>
+          /> */}
+        </LinearGradient>
         <View style={styles.profileContainer}>
           {/* Profile Details */}
           <View>
@@ -43,7 +44,7 @@ function Body({avatar,name}) {
               <Image
                 style={styles.profileImage}
                 source={{
-                  uri: avatar,
+                  uri: api.baseURL+'/image/'+avatar,
                 }}
               />
             </View>
@@ -113,7 +114,7 @@ function Setting({visible,HideSetting,Loading}){
     })
   }
   return(
-  <Modal visible={visible} transparent={true} animationType={'fade'}>
+  <Modal visible={visible} transparent={true}>
     <View onPress={HideSetting} style={{
       flex: 1,
       backgroundColor: 'rgba(00,00,00,.5)',
@@ -125,8 +126,9 @@ function Setting({visible,HideSetting,Loading}){
           flex:1,
         }}
       >
-      <TouchableOpacity onPressOut={HideSetting} style={{flex:4,backgroundColor:'rgba(00,00,00,00)'}}/>
-      <View style={{flex:1}} >
+      <TouchableOpacity animationType='fade' onPressOut={HideSetting} style={{flex:4,backgroundColor:'rgba(00,00,00,00)'}}/>
+
+      <View animationType='slide' style={{flex:1}} >
       <TouchableOpacity activeOpacity={0.9} 
           style={{borderTopEndRadius:15,borderTopStartRadius:15,paddingHorizontal:10,flex:1,backgroundColor: '#e6e6e6',}}>
             <View style={{flex:1,flexDirection:'row', alignItems:'center'}}>
@@ -196,7 +198,8 @@ export default function ProfileScreen1() {
 }
 
 const styles = StyleSheet.create({
-  coverImage: { height: 300, width: '100%' },
+  coverImage: 
+  { height: 300, width: '100%' },
   profileContainer: {
     // height: 1000,
     backgroundColor: '#fff',
