@@ -1,4 +1,5 @@
 import React from 'react'
+import { Text,TouchableOpacity } from 'react-native';
 import LoginScreen from './src/screen/LoginScreen';
 import HomeScreen from './src/screen/HomeScreen';
 import LoadingScreen from './src/screen/LoadingScreen';
@@ -15,11 +16,12 @@ import Test from './src/screen/Test';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useNavigation } from '@react-navigation/native';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import 'expo-dev-client';
+// import { TouchableOpacity } from 'react-native';
 
 const Tab = createBottomTabNavigator();
-
 const TabApp = ({navigation,route}) => {
   // console.log(route.params)
   return(
@@ -58,6 +60,7 @@ const TabApp = ({navigation,route}) => {
   })} >
     <Tab.Screen name='Home' component={HomeScreen} initialParams={route.params} options={{tabBarLabel:'Trang chủ'}} />
     <Tab.Screen name='Post' component={PostScreen} initialParams={route.params} options={{tabBarLabel:'Đăng tin'}} />
+    {/* <Tab.Screen name='add' component={JobPostingForm} options={{tabBarButton: ()=><TouchableOpacity onPress={()=>{}}><Text>Add</Text></TouchableOpacity>}}/> */}
     <Tab.Screen name='Worker' component={WorkerScreen} options={{tabBarLabel:'Quản lý UV'}}/>
     <Tab.Screen name='Profile' component={ProfileScreen} options={{tabBarLabel:'Cá Nhân'}}/>
   </Tab.Navigator>

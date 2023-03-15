@@ -17,16 +17,17 @@ const EditingForm = ({route}) => {
   useState(async ()=>{
     setToken(await AsyncStorage.getItem('token'))
   })
-  const [title, setTitle] = useState(route.params.title);
-  const [description, setDescription] = useState(route.params.description);
-  const [location, setLocation] = useState(route.params.location);
-  const [salary, setSalary] = useState(route.params.salary);
-  const [type, setType] = useState(route.params.type);
-  const [requirement, setRequirement] = useState(route.params.requirement);
-  const [benefit, setBenefit] = useState(route.params.benefit);
-  const [date, setDate] = useState(new Date(route.params.deadline));
-  const [quantity,setQuantity] = useState(route.params.quantity.toString());
-  const [position,setPosition] = useState(route.params.position);
+  const {setJob} = route.params.setJob;
+  const [title, setTitle] = useState(route.params.job.title);
+  const [description, setDescription] = useState(route.params.job.description);
+  const [location, setLocation] = useState(route.params.job.location);
+  const [salary, setSalary] = useState(route.params.job.salary);
+  const [type, setType] = useState(route.params.job.type);
+  const [requirement, setRequirement] = useState(route.params.job.requirement);
+  const [benefit, setBenefit] = useState(route.params.job.benefit);
+  const [date, setDate] = useState(new Date(route.params.job.deadline));
+  const [quantity,setQuantity] = useState(route.params.job.quantity.toString());
+  const [position,setPosition] = useState(route.params.job.position);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [errors,setErrors] = useState([]);
@@ -64,8 +65,9 @@ const EditingForm = ({route}) => {
       },    
     }).then(res =>{
     //   socket.emit('post-job',res.data)
-    const id = route.params.id;
-      navigation.navigate({name: 'Detail',params: {id,company_id,title,description,location,type,salary,requirement,benefit,deadline,quantity,position}});
+    // const id = route.params.id;
+      navigation.navigate({name: 'Post'});
+
     }
     ).catch(e=>{
       setErrors(e.response.data.errors)

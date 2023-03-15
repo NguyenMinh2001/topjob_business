@@ -8,7 +8,7 @@ const DetailJobsScreen = ({ route }) => {
     //  console.log(route.params)
     const navigation = useNavigation();
     const [token, setToken] = useState('');
-    const job = route.params;
+    const [job,setJob] = useState(route.params);
     const [deadline, setDealine] = useState('');
     useState(async () => {
         const currentDate = new Date();
@@ -111,7 +111,7 @@ const DetailJobsScreen = ({ route }) => {
                         <Text style={{color: '#FF6F00'}}>Tạm ẩn</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                     onPress={()=>{navigation.navigate({name: 'JobEditingForm', params: job})}}
+                     onPress={()=>{navigation.navigate({name: 'JobEditingForm', params: {job,setJob}})}}
                      style={{flex: 1, backgroundColor: '#FF6F00',marginHorizontal:25,marginVertical:10,borderRadius:30, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: 'white'}}>Sửa bài viết</Text>
                     </TouchableOpacity>

@@ -13,10 +13,11 @@ export default function HomeScreen({ navigation, route }) {
 
   const [token, settoken] = useState('')
   useState(async () => { settoken(await AsyncStorage.getItem('token')) })
- 
+
 
   const [stories, setStories] = useState([
     {
+      key: 1,
       userImage: 'https://randomuser.me/api/portraits/men/60.jpg',
       userName: 'Brayden Willis',
       storyImage:
@@ -24,6 +25,7 @@ export default function HomeScreen({ navigation, route }) {
       isSeen: false,
     },
     {
+      key: 2,
       userImage: 'https://randomuser.me/api/portraits/women/81.jpg',
       userName: 'Sophie Price',
       storyImage:
@@ -31,6 +33,7 @@ export default function HomeScreen({ navigation, route }) {
       isSeen: false,
     },
     {
+      key: 3,
       userImage: 'https://randomuser.me/api/portraits/men/79.jpg',
       userName: 'Rick Perry',
       storyImage:
@@ -38,6 +41,7 @@ export default function HomeScreen({ navigation, route }) {
       isSeen: false,
     },
     {
+      key: 4,
       userImage: 'https://randomuser.me/api/portraits/men/85.jpg',
       userName: 'Dave Pena',
       storyImage:
@@ -45,6 +49,7 @@ export default function HomeScreen({ navigation, route }) {
       isSeen: false,
     },
     {
+      key: 5,
       userImage: 'https://randomuser.me/api/portraits/women/74.jpg',
       userName: 'Layla Kennedy',
       storyImage:
@@ -79,7 +84,7 @@ export default function HomeScreen({ navigation, route }) {
       blogName: 'Các kỹ năng dẫn dắt đội nhóm trong thời kỳ suy thoái kinh tế',
       shortBlog: 'Dù ở bất kỳ đơn vị nào, quy mô ra sao thì kỹ năng dẫn dắt đội nhóm vẫn có vai trò quan trọng,...',
     },
-    
+
   ]);
 
   const [currentStoryView, setCurrentStoryView] = useState(stories);
@@ -96,6 +101,7 @@ export default function HomeScreen({ navigation, route }) {
             <Text style={{ marginLeft: 20, fontSize: 15, fontWeight: 'bold', marginBottom: 10 }}>Thông Tin Mới</Text>
             <PagerView style={{ height: 110 }} initialPage={0}>
               {stories.map((story, i) => (
+
                 <View style={{ marginLeft: 10, alignItems: 'center' }} key={i}>
                   <TouchableOpacity
                     style={styles.storyContentView}
@@ -120,25 +126,25 @@ export default function HomeScreen({ navigation, route }) {
           <Text style={{ marginLeft: 20, fontSize: 15, fontWeight: 'bold', marginBottom: 10 }} >Hiệu Quả Tuyển Dụng</Text>
           <View style={{ height: 250 }}>
             <View style={{ flex: 1, flexDirection: 'row' }}>
-            <View style={{ flex: 1, backgroundColor: 'lightblue', margin: 10, borderRadius: 10, justifyContent: 'flex-start', alignItems: 'flex-start', padding: 5 }}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Ứng viên mới</Text>
-                <Text>6</Text>
+              <View style={{ flex: 1, backgroundColor: '#F7FAFF', margin: 10, borderRadius: 10, justifyContent: 'center', alignItems: 'flex-start', padding: 5 }}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#6A9DCB' }}>6</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#6A9DCB', }}>Ứng viên mới</Text>
               </View>
-              <View style={{ flex: 1, backgroundColor: 'lightgoldenrodyellow', margin: 10, borderRadius: 10, justifyContent: 'flex-start', alignItems: 'flex-start', padding: 5 }}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Tiếp nhận</Text>
-                <Text>6</Text>
+              <View style={{ flex: 1, backgroundColor: '#FFF6EF', margin: 10, borderRadius: 10, justifyContent: 'center', alignItems: 'flex-start', padding: 5 }}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#E0B773' }}>6</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#E0B773', }}>Ứng viên mới</Text>
               </View>
-              
-           
+
+
             </View>
             <View style={{ flex: 1, flexDirection: 'row' }}>
-            <View style={{ flex: 1, backgroundColor: 'lightpink', margin: 10, borderRadius: 10, justifyContent: 'flex-start', alignItems: 'flex-start', padding: 5 }}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Tin hết hạn</Text>
-                <Text>6</Text>
+              <View style={{ flex: 1, backgroundColor: '#FFEFEF', margin: 10, borderRadius: 10, justifyContent: 'center', alignItems: 'flex-start', padding: 5 }}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#B8594F' }}>6</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#B8594F', }}>Ứng viên mới</Text>
               </View>
-              <View style={{ flex: 1, backgroundColor: 'lightgreen', margin: 10, borderRadius: 10, justifyContent: 'flex-start', alignItems: 'flex-start', padding: 5 }}>
-                <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Tin hiển thị</Text>
-                <Text>6</Text>
+              <View style={{ flex: 1, backgroundColor: '#E6F7EF', margin: 10, borderRadius: 10, justifyContent: 'center', alignItems: 'flex-start', padding: 5 }}>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#5AA07F' }}>6</Text>
+                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#5AA07F', }}>Ứng viên mới</Text>
               </View>
             </View>
           </View>
@@ -146,14 +152,17 @@ export default function HomeScreen({ navigation, route }) {
           <Text style={{ marginLeft: 20, fontSize: 15, fontWeight: 'bold', marginBottom: 10 }} >Blog</Text>
           {/* Story Modal */}
           <View style={{ minHeight: 150, marginBottom: 100 }}>
-            {blog.map((blog , i)=>(<View style={{ backgroundColor: 'white', paddingHorizontal: 10, flexDirection: 'row', marginBottom: 10 }} >
-              <Image source={{ uri: blog.srcImage }} style={{ height: 100, width: 120 }} />
-              <View style={{ paddingHorizontal: 5, flex: 1 }}>
-                <Text style={{ fontWeight: 'bold', fontSize: 12 }}>{blog.blogName}</Text>
-                <Text style={{ fontSize: 10 }}>{blog.shortBlog}</Text>
+            {blog.map((blog, i) =>
+            (
+              <View style={{ backgroundColor: 'white', paddingHorizontal: 10, flexDirection: 'row', marginBottom: 10 }} key={i} >
+                <Image source={{ uri: blog.srcImage }} style={{ height: 100, width: 120 }} />
+                <View style={{ paddingHorizontal: 5, flex: 1 }}>
+                  <Text style={{ fontWeight: 'bold', fontSize: 12 }}>{blog.blogName}</Text>
+                  <Text style={{ fontSize: 10 }}>{blog.shortBlog}</Text>
+                </View>
               </View>
-            </View>))}
-          
+            ))}
+
           </View>
         </ScrollView>
       </View>

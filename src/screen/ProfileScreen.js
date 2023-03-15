@@ -16,13 +16,53 @@ import axios from 'axios';
 import api from '../services/ApiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SysLoading from '../component/sys_loading';
-import { LinearGradient } from 'expo-linear-gradient'
-import { useFonts } from 'expo-font';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as ImagePicker from 'expo-image-picker';
+function Body({ user,setUser }) {
+  const [avatar, setAvatar] = useState(user.avatar);
+  // console.log(avatar)
+  const [token, settoken] = useState('');
+  useState(async () => {
+    settoken(await AsyncStorage.getItem('token'))
+  })
+  const [image, setImage] = useState('');
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.UIImagePickerPresentationStyle.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
-function Body({avatar,name}) {
-  if(avatar == null){
-    return(
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center',backgroundColor:'#f1f3f6' }}>
+    if (!result.canceled) {
+      const data = new FormData();
+      data.append('avatar',
+        {
+          uri: result.assets[0].uri,
+          type: result.assets[0].type + '/jpeg',
+          filename: 'avatar',
+          name: 'avatar.jpeg'
+        });
+      console.log(data)
+      axios({
+        method: "post",
+        url: `${api.baseURL}/user/${user.id}`,
+        data: data,
+        headers: {
+          authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        },
+      }).then(res=>{
+        setUser(res.data)
+      }).catch(e=>{
+        console.log(e)
+      })
+      // setImage(result.assets[0]);
+    }
+  };
+  if (user === '') {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#f1f3f6' }}>
         <ActivityIndicator size='large' color={'#FF6F00'} />
       </View>
     )
@@ -30,42 +70,45 @@ function Body({avatar,name}) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <>
-        <LinearGradient colors={['#FF6F00','#FFA000']} style={{height: 300, width: '100%' }}>
-          {/* <Image
-            style={styles.coverImage}
-            source={{ uri: 'https://targetcareers.co.uk/sites/targetcareers.co.uk/files/public/Business-and-management.jpg' }}
-          /> */}
-        </LinearGradient>
+        {/* <LinearGradient colors={['#FF6F00','#FFA000']} style={{height: 300, width: '100%' }}> */}
+        <Image
+          style={styles.coverImage}
+          source={{ uri: `${api.URL}/assets/img/bg-profile.jpg` }}
+        />
+        {/* </LinearGradient> */}
         <View style={styles.profileContainer}>
           {/* Profile Details */}
           <View>
             {/* Profile Image */}
-            <View style={styles.profileImageView}>
+            <TouchableOpacity onPress={pickImage} activeOpacity={1} style={styles.profileImageView}>
               <Image
                 style={styles.profileImage}
                 source={{
-                  uri: api.baseURL+'/image/'+avatar,
+                  uri: api.baseURL + '/image/' + user.avatar,
                 }}
               />
-            </View>
+              <View style={{ position: 'absolute', height: 20, width: 20, justifyContent: 'center', alignItems: 'center', backgroundColor: 100, marginTop: 90, borderRadius: 10 }}>
+                <Icon name='camera-alt'></Icon>
+              </View>
+            </TouchableOpacity>
             {/* Profile Name and Bio */}
             <View style={styles.nameAndBioView}>
-              <Text style={styles.userFullName}>{name}</Text>
-              <Text style={styles.userBio}>{'I love capturing photos'}</Text>
+              <Text style={styles.userFullName}>{user.name}</Text>
+              <Text style={styles.userBio}>{user.email}</Text>
             </View>
             {/* Posts/Followers/Following View */}
             <View style={styles.countsView}>
               <View style={styles.countView}>
                 <Text style={styles.countNum}>13</Text>
-                <Text style={styles.countText}>Posts</Text>
+                <Text style={styles.countText}>Tin tuyển dụng</Text>
               </View>
-              <View style={styles.countView}>
+              {/* <View style={styles.countView}>
                 <Text style={styles.countNum}>1246</Text>
                 <Text style={styles.countText}>Followers</Text>
-              </View>
+              </View> */}
               <View style={styles.countView}>
                 <Text style={styles.countNum}>348</Text>
-                <Text style={styles.countText}>Following</Text>
+                <Text style={styles.countText}>Ứng viên</Text>
               </View>
             </View>
           </View>
@@ -75,13 +118,13 @@ function Body({avatar,name}) {
   )
 }
 
-function Header({ShowSetting,title}) {
+function Header({ ShowSetting, title }) {
   const navigation = useNavigation()
   return (
     <View style={{ height: 50, flexDirection: 'row', borderBottomWidth: StyleSheet.hairlineWidth }}>
-      <TouchableOpacity onPress={()=>{navigation.navigate('Search')}} style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Icon name='search' size={20}></Icon>
-      </TouchableOpacity>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        {/* <Icon name='search' size={20}></Icon> */}
+      </View>
       <View style={{ flex: 6, justifyContent: 'center', alignItems: 'center' }}>
         <Text>{title}</Text>
       </View>
@@ -92,10 +135,10 @@ function Header({ShowSetting,title}) {
   )
 }
 
-function Setting({visible,HideSetting,Loading}){
+function Setting({ visible, HideSetting, Loading }) {
   const navigation = useNavigation();
   const [token, settoken] = useState(null)
-  useState(async () => { settoken(await AsyncStorage.getItem('token'))})
+  useState(async () => { settoken(await AsyncStorage.getItem('token')) })
   const logout = async () => {
     Loading();
     await axios.post(`${api.baseURL}/logout`, {}, {
@@ -113,78 +156,78 @@ function Setting({visible,HideSetting,Loading}){
       Loading();
     })
   }
-  return(
-  <Modal visible={visible} transparent={true}>
-    <View onPress={HideSetting} style={{
-      flex: 1,
-      backgroundColor: 'rgba(00,00,00,.5)',
-      justifyContent: 'flex-end',
-      alignContent: 'center',
-    }}>
-      <View
-        style={{
-          flex:1,
-        }}
-      >
-      <TouchableOpacity animationType='fade' onPressOut={HideSetting} style={{flex:4,backgroundColor:'rgba(00,00,00,00)'}}/>
+  return (
+    <Modal visible={visible} transparent={true}>
+      <View onPress={HideSetting} style={{
+        flex: 1,
+        backgroundColor: 'rgba(00,00,00,.5)',
+        justifyContent: 'flex-end',
+        alignContent: 'center',
+      }}>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <TouchableOpacity animationType='fade' onPressOut={HideSetting} style={{ flex: 4, backgroundColor: 'rgba(00,00,00,00)' }} />
 
-      <View animationType='slide' style={{flex:1}} >
-      <TouchableOpacity activeOpacity={0.9} 
-          style={{borderTopEndRadius:15,borderTopStartRadius:15,paddingHorizontal:10,flex:1,backgroundColor: '#e6e6e6',}}>
-            <View style={{flex:1,flexDirection:'row', alignItems:'center'}}>
-              <Icon name='info-outline' size={20} style={{marginHorizontal: 10}}/>
-              <Text>Thông tin chung</Text>
-            </View>
-          </TouchableOpacity>  
-          <TouchableOpacity activeOpacity={0.9} 
-          style={{paddingHorizontal:10,flex:1,backgroundColor: '#e6e6e6',}}>
-            <View style={{flex:1,flexDirection:'row', alignItems:'center'}}>
-              <Icon name='outlined-flag' size={20} style={{marginHorizontal: 10}}/>
-              <Text>Báo cáo</Text>
-            </View>
-          </TouchableOpacity>  
-          <TouchableOpacity activeOpacity={0.95} onPress={logout}
-          style={{paddingHorizontal:10,flex:1,backgroundColor: '#e6e6e6',}}>
-            <View style={{flex:1,flexDirection:'row', alignItems:'center'}}>
-              <Icon name='logout' size={20} style={{marginHorizontal: 10}}/>
-              <Text>Đăng xuất</Text>
-            </View>
-          </TouchableOpacity>  
-       </View>
+          <View animationType='slide' style={{ flex: 1 }} >
+            <TouchableOpacity activeOpacity={0.9}
+              style={{ borderTopEndRadius: 15, borderTopStartRadius: 15, paddingHorizontal: 10, flex: 1, backgroundColor: '#e6e6e6', }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <Icon name='info-outline' size={20} style={{ marginHorizontal: 10 }} />
+                <Text>Thông tin chung</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.9}
+              style={{ paddingHorizontal: 10, flex: 1, backgroundColor: '#e6e6e6', }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <Icon name='outlined-flag' size={20} style={{ marginHorizontal: 10 }} />
+                <Text>Báo cáo</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.95} onPress={logout}
+              style={{ paddingHorizontal: 10, flex: 1, backgroundColor: '#e6e6e6', }}>
+              <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                <Icon name='logout' size={20} style={{ marginHorizontal: 10 }} />
+                <Text>Đăng xuất</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
-  </Modal>
+    </Modal>
   )
 }
 export default function ProfileScreen1() {
 
   const [showContent, setShowContent] = useState('Photos');
-  const [visible,setVisible] = useState(false);
-  const [Loading,setLoading] = useState(false);
-  const [user,setUser] = useState({});
+  const [visible, setVisible] = useState(false);
+  const [Loading, setLoading] = useState(false);
+  const [user, setUser] = useState('');
   const [token, settoken] = useState('');
-  useState(async () => { settoken(await AsyncStorage.getItem('token'))})
-  useEffect(()=>{
-    if(token!==''){
-    axios.get(`${api.baseURL}/user`, {
-      headers: {
-        authorization: `Bearer ${token}`,
-      }
-    }).then(res=>{
-      setUser(res.data)
-    }).catch(e=>{
-      console.log(e);
-    }) 
-  }
-  },[token])
-  
-  function ShowSetting(){
+  useState(async () => { settoken(await AsyncStorage.getItem('token')) })
+  useEffect(() => {
+    if (token !== '') {
+      axios.get(`${api.baseURL}/user`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        }
+      }).then(res => {
+        setUser(res.data)
+      }).catch(e => {
+        console.log(e);
+      })
+    }
+  }, [token])
+
+  function ShowSetting() {
     setVisible(true)
   }
-  function HideSetting(){
+  function HideSetting() {
     setVisible(false)
   }
-  function changeloading(){
+  function changeloading() {
     setLoading(!Loading)
   }
   return (
@@ -192,17 +235,18 @@ export default function ProfileScreen1() {
       <SysLoading visible={Loading}></SysLoading>
       <Setting visible={visible} HideSetting={HideSetting} Loading={changeloading} />
       <Header title={user.name} ShowSetting={ShowSetting} />
-        <Body avatar={user.avatar} name={user.name}/>
+      <Body user={user} setUser={setUser} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  coverImage: 
-  { height: 300, width: '100%' },
+  coverImage:
+    { height: 300, width: '100%' },
   profileContainer: {
     // height: 1000,
     backgroundColor: '#fff',
+    // backgroundColor:'red',
     marginTop: -100,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

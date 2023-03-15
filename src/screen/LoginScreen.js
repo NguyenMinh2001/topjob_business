@@ -29,7 +29,7 @@ const Form = ({ ShowLoading, HideLoading }) => {
 
   const Login = async () => {
     ShowLoading();
-    await axios.post(`${api.baseURL}/login`,{email,password})
+    await axios.post(`${api.baseURL}/login`,{email,password,role: 0})
     .then(async res => {
       await AsyncStorage.setItem('token',res.data.token)
       navigation.reset({
@@ -60,7 +60,7 @@ const Form = ({ ShowLoading, HideLoading }) => {
   }
   const Signup = async () => {
     ShowLoading();
-    await axios.post(`${api.baseURL}/register`, { name, email, password, password_confirmation })
+    await axios.post(`${api.baseURL}/register`, { name, email, password, password_confirmation,role: 0})
       .then(async res => {
         await AsyncStorage.setItem('token', res.data.token)
         navigation.reset({
