@@ -61,7 +61,7 @@ const TabApp = ({navigation,route}) => {
     <Tab.Screen name='Home' component={HomeScreen} initialParams={route.params} options={{tabBarLabel:'Trang chủ'}} />
     <Tab.Screen name='Post' component={PostScreen} initialParams={route.params} options={{tabBarLabel:'Đăng tin'}} />
     {/* <Tab.Screen name='add' component={JobPostingForm} options={{tabBarButton: ()=><TouchableOpacity onPress={()=>{}}><Text>Add</Text></TouchableOpacity>}}/> */}
-    <Tab.Screen name='Worker' component={WorkerScreen} options={{tabBarLabel:'Quản lý UV'}}/>
+    <Tab.Screen name='Worker' component={WorkerScreen} initialParams={route.params} options={{tabBarLabel:'Quản lý UV'}}/>
     <Tab.Screen name='Profile' component={ProfileScreen} options={{tabBarLabel:'Cá Nhân'}}/>
   </Tab.Navigator>
   )

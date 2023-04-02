@@ -18,7 +18,24 @@ const DetailJobsScreen = ({ route }) => {
         setDealine(daysLeft);
         setToken(await AsyncStorage.getItem('token'))
     })
-    
+    const handleHideJobs=()=>{
+        axios.put(`${api.baseURL}/hideJob/${job.id}`,{},{
+            headers:{
+                authorization: `Bearer ${token}`,
+            }
+        }).then(res=>{
+            setJob(res.data)
+        }).catch(e=>console.log(e))
+    }
+    const handleShowJobs=()=>{
+        axios.put(`${api.baseURL}/showJob/${job.id}`,{},{
+            headers:{
+                authorization: `Bearer ${token}`,
+            }
+        }).then(res=>{
+            setJob(res.data)
+        }).catch(e=>console.log(e))
+    }
     // const [edit,setEdit] = useState('')
     // const [id] = useState(route.params)
     // useEffect(() => {
@@ -101,22 +118,43 @@ const DetailJobsScreen = ({ route }) => {
                         {/* <View style={{height: 25}}> </View> */}
                     </ScrollView>
                 </View>
-                <View style={{ flex: 2, }}>
+                {job.status === 'hiển thị' && <View style={{ flex: 2, }}>
                     <View style={{flex:1,alignItems: 'center'}}>
                         <Text>Thới Hạn</Text>
-                        <Text>Còn {deadline} ngày</Text>
+                        <Text>Còn {deadline <= 0 ? '0' : deadline} ngày</Text>
                     </View>
                     <View style={{flex:1,flexDirection: 'row'}}>
-                    <TouchableOpacity style={{flex: 1,marginHorizontal:25,marginVertical:10,borderRadius:30, borderColor: '#FF6F00',borderWidth: 1, justifyContent: 'center',alignItems:'center'}}>
+                    <TouchableOpacity onPress={()=>{handleHideJobs()}} style={{flex: 1,marginHorizontal:25,marginVertical:10,borderRadius:30, borderColor: '#FF6F00',borderWidth: 1, justifyContent: 'center',alignItems:'center'}}>
                         <Text style={{color: '#FF6F00'}}>Tạm ẩn</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                     onPress={()=>{navigation.navigate({name: 'JobEditingForm', params: {job,setJob}})}}
+                     onPress={()=>{navigation.navigate({name: 'JobEditingForm', params: job})}}
                      style={{flex: 1, backgroundColor: '#FF6F00',marginHorizontal:25,marginVertical:10,borderRadius:30, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: 'white'}}>Sửa bài viết</Text>
                     </TouchableOpacity>
                     </View>
-                </View>
+                </View>}
+                {job.status === 'hết hạn' && <View style={{ flex: 1, }}>
+                    <View style={{flex:1,alignItems: 'center'}}>
+                        <Text>Tin đã quá hạn</Text>
+                    </View>
+                </View>}
+                {job.status === 'bị ẩn' && <View style={{ flex: 2, }}>
+                    <View style={{flex:1,alignItems: 'center'}}>
+                        <Text>Thới Hạn</Text>
+                        <Text>Còn {deadline <= 0 ? '0' : deadline} ngày</Text>
+                    </View>
+                    <View style={{flex:1,flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={()=>{handleShowJobs()}} style={{flex: 1,marginHorizontal:25,marginVertical:10,borderRadius:30, borderColor: '#FF6F00',borderWidth: 1, justifyContent: 'center',alignItems:'center'}}>
+                        <Text style={{color: '#FF6F00'}}>Hiển thị</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                     onPress={()=>{navigation.navigate({name: 'JobEditingForm', params: job})}}
+                     style={{flex: 1, backgroundColor: '#FF6F00',marginHorizontal:25,marginVertical:10,borderRadius:30, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: 'white'}}>Sửa bài viết</Text>
+                    </TouchableOpacity>
+                    </View>
+                </View>}
             </View>
         )
     

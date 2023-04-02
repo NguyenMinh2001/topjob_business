@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, ActivityIndicator, FlatList, TextInput, Dimensions, StatusBar, Animated } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet, RefreshControl,ScrollView, ActivityIndicator, FlatList, TextInput, Dimensions, StatusBar, Animated } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from '@expo/vector-icons/MaterialIcons'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -52,7 +52,7 @@ export function Header({ user }, { }) {
     </View>
   )
 }
-const Status = ({ title, focus, id, ChoseStatus }) => {
+export const Status = ({ title, focus, id, ChoseStatus }) => {
   // console.log(focus)
   if (focus === id) {
     return (
@@ -72,8 +72,8 @@ const Post = ({ item }) => {
   const navigation = useNavigation(); 
   return (
     <TouchableOpacity onPressIn={()=>{navigation.navigate({name: 'Detail', params: item})}} 
-    delayPressIn = {500}
-    style={{
+      delayPressIn = {500}
+      style={{
       height: 150,
       width: 340,
       marginHorizontal: 5,
@@ -104,6 +104,14 @@ const Post = ({ item }) => {
 }
 
 const PostScreen = ({ route }) => {
+  const [refreshing, setRefreshing] = React.useState(false);
+  const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  }
+  const onRefresh = () => {
+    setRefreshing(true);
+    wait(500).then(() => setRefreshing(false))
+  };
   const navigation = useNavigation();
   const [WINDOW_HEIGHT] = useState(Dimensions.get('screen').height - StatusBar.currentHeight);
   const [user] = useState(route.params)
@@ -147,6 +155,19 @@ const PostScreen = ({ route }) => {
     });
     // socket.off('job:' + user.id);
   }, []);
+  const getAlljob=()=>{
+    axios.get(`${api.baseURL}/Jobs/${user.id}`, {
+      headers: {
+        authorization: `Bearer ${token}`,
+      }
+    }).then(res => {
+      setJobs(res.data)
+      setTempjobs(res.data)
+      setLoading(false)
+    }).catch(e => {
+      console.log(e)
+    })
+  }
   useEffect(() => {
     if (token != '') {
       axios.get(`${api.baseURL}/Business_info/${user.id}`, {
@@ -158,20 +179,11 @@ const PostScreen = ({ route }) => {
       }).catch(e => {
         console.log(e)
       })
-
-      axios.get(`${api.baseURL}/Jobs/${user.id}`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        }
-      }).then(res => {
-        setJobs(res.data)
-        setTempjobs(res.data)
-        setLoading(false)
-      }).catch(e => {
-        console.log(e)
-      })
+      if(!refreshing){
+         getAlljob();
+      }
     }
-  }, [token]);
+  }, [token,refreshing]);
   // console.log(jobs)
 
   const ChoseStatus = (id) => {
@@ -293,6 +305,12 @@ const PostScreen = ({ route }) => {
                 </View>
               </View>) : (
                 <FlatList
+                refreshControl={
+                  <RefreshControl
+                    colors={['orange','#FF6F00']}
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                  />}
                   data={tempjobs}
                   showsVerticalScrollIndicator={false}
                   renderItem={({ item }) => <Post 
@@ -304,7 +322,7 @@ const PostScreen = ({ route }) => {
             <View style={{ flex: 1 }} />
             <Animated.View style={{ flex: 1, position: 'absolute', marginHorizontal: 125, marginTop: 450 }}>
               <View style={{ flex: 4 }} />
-              <TouchableOpacity onPress={() => { navigation.navigate({ name: 'JobPostingForm', params: user.id }) }} style={{ backgroundColor: 'rgba(255, 134, 28, 0.5)', padding: 5, borderRadius: 10 }}>
+              <TouchableOpacity onPress={() => { navigation.navigate({ name: 'JobPostingForm', params: user.id})}} style={{ backgroundColor: 'rgba(255, 134, 28, 0.5)', padding: 5, borderRadius: 10 }}>
                 <Text style={{ color: 'white' }}>+ Thêm Tin mới</Text>
               </TouchableOpacity>
             </Animated.View>

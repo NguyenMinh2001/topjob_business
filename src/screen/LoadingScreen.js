@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function LoadingScreen() {
   const navigation = useNavigation();
   const [token, settoken] = useState('');
+  console.log(token)
   useState(async () => {settoken(await AsyncStorage.getItem('token'))})
   useEffect(() => {
     if (token !== '') {

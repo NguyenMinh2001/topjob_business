@@ -17,17 +17,72 @@ const EditingForm = ({route}) => {
   useState(async ()=>{
     setToken(await AsyncStorage.getItem('token'))
   })
-  const {setJob} = route.params.setJob;
-  const [title, setTitle] = useState(route.params.job.title);
-  const [description, setDescription] = useState(route.params.job.description);
-  const [location, setLocation] = useState(route.params.job.location);
-  const [salary, setSalary] = useState(route.params.job.salary);
-  const [type, setType] = useState(route.params.job.type);
-  const [requirement, setRequirement] = useState(route.params.job.requirement);
-  const [benefit, setBenefit] = useState(route.params.job.benefit);
-  const [date, setDate] = useState(new Date(route.params.job.deadline));
-  const [quantity,setQuantity] = useState(route.params.job.quantity.toString());
-  const [position,setPosition] = useState(route.params.job.position);
+  const [DataTag] = useState([
+    {
+      id: 1,
+      title: 'Sinh Học'
+    },
+    {
+      id: 2,
+      title: 'Ngoại Ngữ'
+    },
+    {
+      id: 3,
+      title: 'Điện – Cơ Khí'
+    },
+    {
+      id: 4,
+      title: 'Ngân Hàng'
+    },
+    {
+      id: 5,
+      title: 'Thiết Kế Thời Trang'
+    },
+    {
+      id: 6,
+      title: 'Luật'
+    },
+    {
+      id: 7,
+      title: 'Du Lịch'
+    },
+    {
+      id: 8,
+      title: 'Kỹ Sư Xây Dựng'
+    },
+    {
+      id: 9,
+      title: 'Công Nghệ Thông Tin'
+    },
+    {
+      id: 10,
+      title: 'Marketing'
+    },
+    {
+      id: 11,
+      title: 'Quản Lý Nhân Sự'
+    },
+    {
+      id: 12,
+      title: 'Tài Chính/Đầu Tư'
+    },
+    {
+      id: 13,
+      title: 'Quản Lý Nhà Hàng, Khách Sạn'
+    },
+
+  ])
+  const [profession,setProfession]= useState(route.params.profession);
+  const [title, setTitle] = useState(route.params.title);
+  const [description, setDescription] = useState(route.params.description);
+  const [location, setLocation] = useState(route.params.location);
+  const [salary, setSalary] = useState(route.params.salary);
+  const [type, setType] = useState(route.params.type);
+  const [requirement, setRequirement] = useState(route.params.requirement);
+  const [benefit, setBenefit] = useState(route.params.benefit);
+  const [date, setDate] = useState(new Date(route.params.deadline));
+  const [quantity,setQuantity] = useState(route.params.quantity.toString());
+  const [position,setPosition] = useState(route.params.position);
   const [mode, setMode] = useState('date');
   const [show, setShow] = useState(false);
   const [errors,setErrors] = useState([]);
@@ -57,15 +112,15 @@ const EditingForm = ({route}) => {
     const day = String(date.getDate()).padStart(2, '0');
     const deadline = `${year}-${month}-${day}`;
     const company_id = route.params.company_id;
-    const data = {company_id,title,description,location,type,salary,requirement,benefit,deadline,quantity,position}
+    const data = {company_id,title,description,location,type,salary,requirement,benefit,deadline,quantity,position,profession}
     console.log(data)
     axios.put(`${api.baseURL}/Jobs/${route.params.id}`,data,{
       headers: { 
         authorization: `Bearer ${token}`,
       },    
     }).then(res =>{
-    //   socket.emit('post-job',res.data)
-    // const id = route.params.id;
+      socket.emit('post-job',res.data)
+      const id = route.params.id;
       navigation.navigate({name: 'Post'});
 
     }
@@ -115,12 +170,23 @@ const EditingForm = ({route}) => {
         </Picker>
       </View>
       {errors.type && <Text style={{color:'red'}}>{errors.type[0]}</Text>}
+      <Text>Ngành nghề:</Text>
+      <View style={{backgroundColor:20,borderRadius: 10}}>
+        <Picker
+          selectedValue={profession}
+          onValueChange={(itemValue) => setProfession(itemValue)}
+        >
+          <Picker.Item style={{}} label="Chọn loại ngành nghề" value="" />
+          {DataTag.map((item)=> <Picker.Item key={item.id} label = {item.title} value={item.title}/>)}
+        </Picker>
+      </View>
+      {errors.profession && <Text style={{color:'red'}}>{errors.profession[0]}</Text>}
       <Text>Mức lương:</Text>
       <TextInput
         placeholder="Lương"
         value={salary}
         onChangeText={setSalary}
-        keyboardType={"numeric"}
+        keyboardType={"numbers-and-punctuation"}
         style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: 'gray' , borderRadius: 10, backgroundColor: 20 }}
       />
        {errors.salary && <Text style={{color:'red'}}>{errors.salary[0]}</Text>}

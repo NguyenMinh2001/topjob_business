@@ -17,6 +17,63 @@ const JobPostingForm = ({route}) => {
   useState(async ()=>{
     setToken(await AsyncStorage.getItem('token'))
   })
+  // console.log(token)
+  const [DataTag] = useState([
+    {
+      id: 1,
+      title: 'Sinh Học'
+    },
+    {
+      id: 2,
+      title: 'Ngoại Ngữ'
+    },
+    {
+      id: 3,
+      title: 'Điện – Cơ Khí'
+    },
+    {
+      id: 4,
+      title: 'Ngân Hàng'
+    },
+    {
+      id: 5,
+      title: 'Thiết Kế Thời Trang'
+    },
+    {
+      id: 6,
+      title: 'Luật'
+    },
+    {
+      id: 7,
+      title: 'Du Lịch'
+    },
+    {
+      id: 8,
+      title: 'Kỹ Sư Xây Dựng'
+    },
+    {
+      id: 9,
+      title: 'Công Nghệ Thông Tin'
+    },
+    {
+      id: 10,
+      title: 'Marketing'
+    },
+    {
+      id: 11,
+      title: 'Quản Lý Nhân Sự'
+    },
+    {
+      id: 12,
+      title: 'Tài Chính/Đầu Tư'
+    },
+    {
+      id: 13,
+      title: 'Quản Lý Nhà Hàng, Khách Sạn'
+    },
+
+  ])
+  const [profession,setProfession]= useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
@@ -55,8 +112,10 @@ const JobPostingForm = ({route}) => {
     const day = String(date.getDate()).padStart(2, '0');
     const deadline = `${year}-${month}-${day}`;
     const company_id = route.params;
-    const data = {title,description,location,type,salary,requirement,benefit,deadline,quantity,position}
-    console.log(data)
+    // console.log(company_id);
+    const data = {title,profession,description,location,type,salary,requirement,benefit,deadline,quantity,position}
+    // console.log(data)
+    // console.log(company_id)
     axios.post(`${api.baseURL}/Jobs/${company_id}`,data,{
       headers: { 
         authorization: `Bearer ${token}`,
@@ -64,9 +123,11 @@ const JobPostingForm = ({route}) => {
     }).then(res =>{
       socket.emit('post-job',res.data)
       navigation.goBack();
-    }
-    ).catch(e=>{
-      setErrors(e.response.data.errors)
+    }).catch(e=>{
+      console.log(e.response.status)
+      if(e.response.status === 422){
+         setErrors(e.response.data.errors)
+      }
     })
   };
 
@@ -110,13 +171,24 @@ const JobPostingForm = ({route}) => {
           <Picker.Item style={{}} label="Tự do" value="freelance" />
         </Picker>
       </View>
-      {errors.type && <Text style={{color:'red'}}>{errors.type[0]}</Text>}
+        {errors.type && <Text style={{color:'red'}}>{errors.type[0]}</Text>}
+      <Text>Ngành nghề:</Text>
+      <View style={{backgroundColor:20,borderRadius: 10}}>
+        <Picker
+          selectedValue={profession}
+          onValueChange={(itemValue) => setProfession(itemValue)}
+        >
+          <Picker.Item style={{}} label="Chọn loại ngành nghề" value="" />
+          {DataTag.map((item)=> <Picker.Item key={item.id} label = {item.title} value={item.title}/>)}
+        </Picker>
+      </View>
+      {errors.profession && <Text style={{color:'red'}}>{errors.profession[0]}</Text>}
       <Text>Mức lương:</Text>
       <TextInput
         placeholder="Lương"
         value={salary}
         onChangeText={setSalary}
-        keyboardType={"numeric"}
+        keyboardType={"numbers-and-punctuation"}
         style={{ marginVertical: 10, padding: 10, borderWidth: 1, borderColor: 'gray' , borderRadius: 10, backgroundColor: 20 }}
       />
        {errors.salary && <Text style={{color:'red'}}>{errors.salary[0]}</Text>}
